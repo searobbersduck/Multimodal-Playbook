@@ -1,0 +1,6 @@
+[submodule "mcore-features/thirdparty/Megatron-LM"]
+	path = mcore-features/thirdparty/Megatron-LM
+	url = https://github.com/NVIDIA/Megatron-LM.git
+[submodule "mcore-features/thirdparty/Megatron-LM-20250414"]
+	path = mcore-features/thirdparty/Megatron-LM-20250414
+	url = https://github.com/NVIDIA/Megatron-LM.git
