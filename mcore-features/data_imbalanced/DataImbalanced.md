@@ -23,7 +23,7 @@
 
 1. image tokens数量小于2500的数据分布如图：
    ![x](images/data_imbalanced/data_imbalanced_llava_datasets_stat_lessthan2500.png)
-2. image tokens超过3000的case有180例，占总体数据量的不足5%
+2. image tokens超过3000的case有180例，占总体数据量的不足0.05%
 3. image tokens数量在500-1500之间的占比99.4%
 
 
@@ -34,5 +34,24 @@
 
 <br><br>
 
-## 数据不均衡的解决方案——Packing Sequence
+## 数据不均衡的解决方案——Sequence Packing
 
+Sequence Packing的原理如下图所示：
+![Sequence Packing for NeVA](./images/data_imbalanced/sequence_packing_principle.png)
+
+
+
+### 随机数据做Sequence Packing
+
+### Sequence Packing之前先做预处理
+
+
+
+
+****
+
+## 试验
+
+## 参考资料
+1. [Sequence Packing](https://docs.nvidia.com/nemo-framework/user-guide/24.12/nemotoolkit/features/optimizations/sequence_packing.html)
+2. [Sequence Packing for NeVA](https://docs.nvidia.com/nemo-framework/user-guide/24.12/nemotoolkit/multimodal/mllm/sequence_packing.html)
