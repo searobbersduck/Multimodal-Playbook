@@ -2,7 +2,7 @@
 
 <br><br>
 
-## 数据不均衡的场景 
+## 1.数据不均衡的场景 
 
 ### 参考资料
 
@@ -13,7 +13,9 @@
 1. 同一mbs内部，不同的数据并行组，由于输入数据（images/videos/text）的不均衡导致计算的不均衡：Ref: [DistTrain](https://arxiv.org/abs/2408.04275)
 ![data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/data_imbalanced_intra_mbs_straggler.png)
 1. 不同的mbs之间，由于数据的不均衡，造成pipeline的bubble，从而降低训练效率；
-![data_imbalanced_inter_mbs_straggler](./images/data_imbalanced/data_imbalanced_inter_mbs_straggler.png)
+![data_imbalanced_inter_mbs_straggler](./images/data_imbalanced/data_imbalanced_inter_mbs_st
+
+## 2.数据
 
 ### 具体数据分析
 
@@ -44,6 +46,36 @@ Sequence Packing的原理如下图所示：
 ### 随机数据做Sequence Packing
 
 ### Sequence Packing之前先做预处理
+
+### 参数选取
+
+<br>
+
+## 试验
+
+### 试验1：单卡H20
+
+* H20 96G, single GPU
+* image_tiles: 1-20, images tokens: 256-5120
+  
+|packing sequence| time per sample (ms)|buffer size|packing sequence length|sequence length|
+|:--------------:|:-------------------:|:---------:|:---------------------:|:-------------:|
+|disabled|||||
+|enabled |||||
+
+<br>
+
+### 试验2：4卡H20, TP1PP1DP4
+* H20 96G, 4GPUs
+* image_tiles: 1-20, images tokens: 256-5120
+
+
+|packing sequence| time per sample (ms)|buffer size|packing sequence length|sequence length|
+|:--------------:|:-------------------:|:---------:|:---------------------:|:-------------:|
+|disabled|||||
+|enabled |||||
+
+
 
 
 
