@@ -12,6 +12,8 @@
 ### 数据不均衡
 1. 同一mbs内部，不同的数据并行组，由于输入数据（images/videos/text）的不均衡导致计算的不均衡：Ref: [DistTrain](https://arxiv.org/abs/2408.04275)
 ![data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/data_imbalanced_intra_mbs_straggler.png)
+![nsys_data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler.png)
+
 1. 不同的mbs之间，由于数据的不均衡，造成pipeline的bubble，从而降低训练效率；
 ![data_imbalanced_inter_mbs_straggler](./images/data_imbalanced/data_imbalanced_inter_mbs_straggler.png)
 
@@ -41,7 +43,31 @@
 Sequence Packing的原理如下图所示：
 ![Sequence Packing for NeVA](./images/data_imbalanced/sequence_packing_principle.png)
 
+## mcore实现
 
+Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21fb011529d7401c370841ce530785a/examples/multimodal/dataset_helpers.py#L49)
+
+```
+class ImageTaskSamplePacked(Sample):
+    """Dataclass to store a single packed sample (not a batch).
+
+        P = Number of sub-samples in the packed sample
+        seq_len = Total sequence length
+        num_imgs = Number of images across all samples in the packed sample
+    """
+
+    __key__: str    # Sample name
+    __restore_key__: Tuple[Union[str, int, tuple], ...]
+    __subflavor__: Dict     # Sample metadata. Deprecated.
+    __subflavors__: Dict    # Sample metadata.
+    tokens: torch.Tensor  # Input tokens packed into a single tensor (seq_len,)
+    labels: torch.Tensor # Target tokens packed into a single tensor (seq_len,)
+    imgs: List[torch.Tensor]    # Input images
+    num_tiles: List[int]  # Number of tiles for each image of each sample (num_imgs)
+    max_length: int    # Maximum length across sub-samples.
+    cu_lengths: List[int]  # Cumulative length of each sub-sample in this packed sample incl. text and image tokens (P,)
+
+```
 
 ### 随机数据做Sequence Packing
 
@@ -60,23 +86,25 @@ Sequence Packing的原理如下图所示：
   
 |packing sequence| time per sample (ms)|buffer size|packing sequence length|sequence length|
 |:--------------:|:-------------------:|:---------:|:---------------------:|:-------------:|
-|disabled|||||
-|enabled |||||
+|disabled|1585.5|100|8k|8k|
+|enabled |1007.5|100|8k|8k|
+
+**speedup: 57.4%**
 
 <br>
 
-### 试验2：4卡H20, TP1PP1DP4
-* H20 96G, 4GPUs
+### 试验2：2卡H20, TP1PP1DP2, 模拟：同一mbs内部，不同的数据并行组，由于输入数据（images/videos/text）的不均衡导致计算的不均衡
+* H20 96G, 2GPUs
 * image_tiles: 1-20, images tokens: 256-5120
 
 
 |packing sequence| time per sample (ms)|buffer size|packing sequence length|sequence length|
 |:--------------:|:-------------------:|:---------:|:---------------------:|:-------------:|
-|disabled|||||
-|enabled |||||
+|disabled|817.1|100|8k|8k|
+|enabled |532.2|100|8k|8k|
 
 
-
+**speedup: 53.5%**
 
 
 
