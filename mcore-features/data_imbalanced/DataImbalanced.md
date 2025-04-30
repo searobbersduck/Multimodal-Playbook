@@ -4,11 +4,6 @@
 
 ## 1.数据不均衡的场景 
 
-### 参考资料
-
-1. [DistTrain: Addressing Model and Data Heterogeneity with Disaggregated Training for Multimodal Large Language Models](https://arxiv.org/abs/2408.04275)
-2. [OmniBal: Towards Fast Instruct-tuning for Vision-Language Models via Omniverse Computation Balance](https://arxiv.org/abs/2407.20761)
-
 ### 数据不均衡
 1. 同一mbs内部，不同的数据并行组，由于输入数据（images/videos/text）的不均衡导致计算的不均衡：Ref: [DistTrain](https://arxiv.org/abs/2408.04275)
    
@@ -49,27 +44,7 @@ Sequence Packing的原理如下图所示：
 
 Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21fb011529d7401c370841ce530785a/examples/multimodal/dataset_helpers.py#L49)
 
-```
-class ImageTaskSamplePacked(Sample):
-    """Dataclass to store a single packed sample (not a batch).
-
-        P = Number of sub-samples in the packed sample
-        seq_len = Total sequence length
-        num_imgs = Number of images across all samples in the packed sample
-    """
-
-    __key__: str    # Sample name
-    __restore_key__: Tuple[Union[str, int, tuple], ...]
-    __subflavor__: Dict     # Sample metadata. Deprecated.
-    __subflavors__: Dict    # Sample metadata.
-    tokens: torch.Tensor  # Input tokens packed into a single tensor (seq_len,)
-    labels: torch.Tensor # Target tokens packed into a single tensor (seq_len,)
-    imgs: List[torch.Tensor]    # Input images
-    num_tiles: List[int]  # Number of tiles for each image of each sample (num_imgs)
-    max_length: int    # Maximum length across sub-samples.
-    cu_lengths: List[int]  # Cumulative length of each sub-sample in this packed sample incl. text and image tokens (P,)
-
-```
+![](./images/data_imbalanced/code_image_task_sample_packed.png)
 
 ### 随机数据做Sequence Packing
 
@@ -122,10 +97,12 @@ class ImageTaskSamplePacked(Sample):
     ![nsys_data_imbalanced_intra_mbs_straggler_sequence_packing](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler_sequence_packing.png
     )
 
+<br><br>
+
 ****
 
-## 试验
-
-## 参考资料
+# 参考资料
 1. [Sequence Packing](https://docs.nvidia.com/nemo-framework/user-guide/24.12/nemotoolkit/features/optimizations/sequence_packing.html)
 2. [Sequence Packing for NeVA](https://docs.nvidia.com/nemo-framework/user-guide/24.12/nemotoolkit/multimodal/mllm/sequence_packing.html)
+3. [DistTrain: Addressing Model and Data Heterogeneity with Disaggregated Training for Multimodal Large Language Models](https://arxiv.org/abs/2408.04275)
+4. [OmniBal: Towards Fast Instruct-tuning for Vision-Language Models via Omniverse Computation Balance](https://arxiv.org/abs/2407.20761)
