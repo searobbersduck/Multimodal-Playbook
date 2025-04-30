@@ -87,20 +87,35 @@ Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21
 
 * 下图：为了更明显的看出**intra mbs**的数据不均衡场景对训练效率的影响，将两个数据并行组的数据设计的极不均衡，如DP1上的数据为2 image tiles (256 image tokens), DP0上的数据为20 image tiles。从下面的timeline可以看出：
     1. DP1的训练执行很快，大量的时间在等待DP0执行，通讯等待浪费了大量时间；
-    2. DP1上gemm kernel的执行间隔有大量的空闲，执行效率低下；
+    2. DP1上kernel的执行间隔有大量的空闲，执行效率低下；
+    3. 经常看大量的空闲时由launch atten kernel造成的，为何？？？
    
         **DP0, 20 image tiles, DP1, 2 image tiles: no sequence packing**
         ![nsys_data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler.png)
 
 * 作为对比，当开启了sequence packing，如下图是一个实际数据运行的例子：
     1. 两个DP通信组的负载相对更均衡，虽然无法做到完全均衡，但是与上述试验对比，两个DP rank之间的通信等待时间明显更少；
-    2. gemm kernel的利用率更高，对比上述试验，gemm kernel之间不在有大量的空白；
+    2. 对比上述试验，kernel之间不在有大量的空白；
     ![nsys_data_imbalanced_intra_mbs_straggler_sequence_packing](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler_sequence_packing.png
     )
+
+<br>
+
+### 试验3：
+
+```
+CUDA_VISIBLE_DEVICES=4,5 ./examples/multimodal/pretrain_mistral_clip_packed_sql_script.sh -1 -1 8192 9000 9000 m1gb32-rand_1-20_4000samples_2gpu
+
+CUDA_VISIBLE_DEVICES=6,7 ./examples/multimodal/pretrain_mistral_clip_packed_sql_script.sh 8192 100 8192 9000 9000 m1gb32-rand_1-20_4000samples_2gpu
+```
+
 
 <br><br>
 
 ****
+
+
+
 
 # 参考资料
 1. [Sequence Packing](https://docs.nvidia.com/nemo-framework/user-guide/24.12/nemotoolkit/features/optimizations/sequence_packing.html)
