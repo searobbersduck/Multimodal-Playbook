@@ -11,10 +11,10 @@
 
 ### 数据不均衡
 1. 同一mbs内部，不同的数据并行组，由于输入数据（images/videos/text）的不均衡导致计算的不均衡：Ref: [DistTrain](https://arxiv.org/abs/2408.04275)
-![data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/data_imbalanced_intra_mbs_straggler.png)
-![nsys_data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler.png)
+   
+    ![data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/data_imbalanced_intra_mbs_straggler.png)
 
-1. 不同的mbs之间，由于数据的不均衡，造成pipeline的bubble，从而降低训练效率；
+2. 不同的mbs之间，由于数据的不均衡，造成pipeline的bubble，从而降低训练效率；
 ![data_imbalanced_inter_mbs_straggler](./images/data_imbalanced/data_imbalanced_inter_mbs_straggler.png)
 
 ## 2.数据
@@ -105,6 +105,14 @@ class ImageTaskSamplePacked(Sample):
 
 
 **speedup: 53.5%**
+
+
+* 下图：为了更明显的看出**intra mbs**的数据不均衡场景对训练效率的影响，将两个数据并行组的数据设计的极不均衡，如DP1上的数据为2 image tiles (256 image tokens), DP0上的数据为20 image tiles。从下面的timeline可以看出：
+    1. DP1的训练执行很快，大量的时间在等待DP0执行，通讯等待浪费了大量时间；
+    2. DP1上gemm kernel的执行间隔有大量的空闲，执行效率低下；
+   
+        **DP0, 20 image tiles, DP1, 2 image tiles: no sequence packing**
+        ![nsys_data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler.png)
 
 
 
