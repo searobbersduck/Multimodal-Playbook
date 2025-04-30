@@ -43,6 +43,8 @@
 Sequence Packing的原理如下图所示：
 ![Sequence Packing for NeVA](./images/data_imbalanced/sequence_packing_principle.png)
 
+![Sequence Packing for NeVA](./images/data_imbalanced/sequence_packing_principle.png){width=50%} 
+
 ## mcore实现
 
 Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21fb011529d7401c370841ce530785a/examples/multimodal/dataset_helpers.py#L49)
