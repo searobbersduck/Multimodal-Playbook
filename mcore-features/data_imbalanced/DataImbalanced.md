@@ -27,7 +27,7 @@
 
 <br><br>
 
-## 数据不均衡的解决方案——Sequence Packing
+## 3. 数据不均衡的解决方案——Sequence Packing
 
 Sequence Packing的原理如下图所示：
 
@@ -35,7 +35,7 @@ Sequence Packing的原理如下图所示：
 
 <br>
 
-## 代码实现
+## 4. 代码实现
 
 ### 相关参数选取
 
@@ -54,7 +54,7 @@ Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21
 
 <br>
 
-## 试验
+## 5.试验
 
 ### 试验1：单卡H20
 
