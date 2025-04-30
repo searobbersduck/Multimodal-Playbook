@@ -26,7 +26,7 @@
 参考：[LLavaDatasetAnalysis.ipynb](./LLavaDatasetAnalysis.ipynb)
 
 1. image tokens数量小于2500的数据分布如图：
-   ![x](images/data_imbalanced/data_imbalanced_llava_datasets_stat_lessthan2500.png)
+   <img src="./images/data_imbalanced/data_imbalanced_llava_datasets_stat_lessthan2500.png" alt="描述" width="75%" style="display: block; margin: 0 auto;">
 2. image tokens超过3000的case有180例，占总体数据量的不足0.05%
 3. image tokens数量在500-1500之间的占比99.4%
 
@@ -41,9 +41,9 @@
 ## 数据不均衡的解决方案——Sequence Packing
 
 Sequence Packing的原理如下图所示：
-![Sequence Packing for NeVA](./images/data_imbalanced/sequence_packing_principle.png)
 
-![Sequence Packing for NeVA](./images/data_imbalanced/sequence_packing_principle.png){width=50%} 
+<img src="./images/data_imbalanced/sequence_packing_principle.png" alt="描述" width="75%" style="display: block; margin: 0 auto;">
+
 
 ## mcore实现
 
