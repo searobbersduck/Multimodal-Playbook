@@ -114,7 +114,11 @@ class ImageTaskSamplePacked(Sample):
         **DP0, 20 image tiles, DP1, 2 image tiles: no sequence packing**
         ![nsys_data_imbalanced_intra_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler.png)
 
-
+* 作为对比，当开启了sequence packing，如下图是一个实际数据运行的例子：
+    1. 两个DP通信组的负载相对更均衡，虽然无法做到完全均衡，但是与上述试验对比，两个DP rank之间的通信等待时间明显更少；
+    2. gemm kernel的利用率更高，对比上述试验，gemm kernel之间不在有大量的空白；
+    ![nsys_data_imbalanced_intra_mbs_straggler_sequence_packing](./images/data_imbalanced/nsys_data_imbalanced_intra_mbs_straggler_sequence_packing.png
+    )
 
 ****
 
