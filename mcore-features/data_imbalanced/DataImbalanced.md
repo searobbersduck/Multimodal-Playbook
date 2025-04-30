@@ -35,17 +35,22 @@ Sequence Packing的原理如下图所示：
 
 <br>
 
-## mcore实现
+## 代码实现
+
+### 相关参数选取
+
+```
+--packing-seq-length 8192
+--packing-buffer-size 100
+```
 
 Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21fb011529d7401c370841ce530785a/examples/multimodal/dataset_helpers.py#L49)
 
 ![](./images/data_imbalanced/code_image_task_sample_packed.png)
 
-### 随机数据做Sequence Packing
 
-### Sequence Packing之前先做预处理
 
-### 参数选取
+
 
 <br>
 
@@ -78,6 +83,7 @@ Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21
 
 **speedup: 53.5%**
 
+<br>
 
 * 下图：为了更明显的看出**intra mbs**的数据不均衡场景对训练效率的影响，将两个数据并行组的数据设计的极不均衡，如DP1上的数据为2 image tiles (256 image tokens), DP0上的数据为20 image tiles。从下面的timeline可以看出：
     1. DP1的训练执行很快，大量的时间在等待DP0执行，通讯等待浪费了大量时间；
