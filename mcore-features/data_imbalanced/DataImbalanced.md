@@ -58,8 +58,9 @@ Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21
 
 ### 试验1：单卡H20
 
+Configuration:
 * H20 96G, single GPU
-* image_tiles: 1-20, images tokens: 256-5120
+* image_tiles: 1-20, images tokens: 256-5120, mbs=1, gbs=2, dp=2
   
 |packing sequence| time per sample (ms)|buffer size|packing sequence length|sequence length|
 |:--------------:|:-------------------:|:---------:|:---------------------:|:-------------:|
@@ -71,9 +72,10 @@ Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21
 <br>
 
 ### 试验2：2卡H20, TP1PP1DP2, 模拟：同一mbs内部，不同的数据并行组，由于输入数据（images/videos/text）的不均衡导致计算的不均衡
-* H20 96G, 2GPUs
-* image_tiles: 1-20, images tokens: 256-5120
 
+Configuration:
+* H20 96G, 2GPUs
+* image_tiles: 1-20, images tokens: 256-5120, mbs=1, gbs=2, dp=2
 
 |packing sequence| time per sample (ms)|buffer size|packing sequence length|sequence length|
 |:--------------:|:-------------------:|:---------:|:---------------------:|:-------------:|
@@ -103,18 +105,32 @@ Ref: [dataset_helpers.py](https://github.com/NVIDIA/Megatron-LM/blob/4429e8ebe21
 
 ### 试验3：
 
+Configuration:
+* H20 96G, 2GPUs
+* image_tiles: 1-20, images tokens: 256-5120, mbs=1, gbs=32, dp=2
+
+Script:
 ```
 CUDA_VISIBLE_DEVICES=4,5 ./examples/multimodal/pretrain_mistral_clip_packed_sql_script.sh -1 -1 8192 9000 9000 m1gb32-rand_1-20_4000samples_2gpu
 
 CUDA_VISIBLE_DEVICES=6,7 ./examples/multimodal/pretrain_mistral_clip_packed_sql_script.sh 8192 100 8192 9000 9000 m1gb32-rand_1-20_4000samples_2gpu
 ```
 
+|packing sequence| time per sample (ms)|buffer size|packing sequence length|sequence length|
+|:--------------:|:-------------------:|:---------:|:---------------------:|:-------------:|
+|disabled|769.2|100|8k|8k|
+|enabled |526.2|100|8k|8k|
+
+**speedup: 46.2%**
+
+* 当不使能sequence packing时，两个DP rank之间会有大量通信等待的时间，浪费计算资源；当使能sequence packing时，两个DP rank之间的负载更加均衡，计算资源利用率更高。
+
+    ![nsys_data_imbalanced_inter_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_inter_mbs_straggler.png)
+
 
 <br><br>
 
 ****
-
-
 
 
 # 参考资料
