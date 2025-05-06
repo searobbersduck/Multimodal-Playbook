@@ -87,6 +87,7 @@ Configuration:
 
 <br>
 
+**Timeline分析**：
 * 下图：为了更明显的看出**intra mbs**的数据不均衡场景对训练效率的影响，将两个数据并行组的数据设计的极不均衡，如DP1上的数据为2 image tiles (256 image tokens), DP0上的数据为20 image tiles。从下面的timeline可以看出：
     1. DP1的训练执行很快，大量的时间在等待DP0执行，通讯等待浪费了大量时间；
     2. DP1上kernel的执行间隔有大量的空闲，执行效率低下；
@@ -123,6 +124,9 @@ CUDA_VISIBLE_DEVICES=6,7 ./examples/multimodal/pretrain_mistral_clip_packed_sql_
 
 **speedup: 46.2%**
 
+<br>
+
+**Timeline分析**：
 * 当不使能sequence packing时，两个DP rank之间会有大量通信等待的时间，浪费计算资源；当使能sequence packing时，两个DP rank之间的负载更加均衡，计算资源利用率更高。
 
     ![nsys_data_imbalanced_inter_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_inter_mbs_straggler.png)
