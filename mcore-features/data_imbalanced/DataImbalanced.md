@@ -132,10 +132,14 @@ CUDA_VISIBLE_DEVICES=6,7 ./examples/multimodal/pretrain_mistral_clip_packed_sql_
     ![nsys_data_imbalanced_inter_mbs_straggler](./images/data_imbalanced/nsys_data_imbalanced_inter_mbs_straggler.png)
 
 
+<br>
+
+## 6. 数据不均衡结合模型不均衡（TODO）
+
+目前sequence packing和pp>1无法同时开启，已经提了bug：[[Megatron-LM] [Multimodal][Llava] Error occurs when running llava model with pipeline-model-parallel-size=2 and sequence packing enabled at the same time](https://nvbugspro.nvidia.com/bug/5268492).
+
 <br><br>
-
 ****
-
 
 # 参考资料
 1. [Sequence Packing](https://docs.nvidia.com/nemo-framework/user-guide/24.12/nemotoolkit/features/optimizations/sequence_packing.html)
